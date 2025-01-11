@@ -31,4 +31,28 @@ export default async function postRoutes(fastify: FastifyRouteInstance) {
       res.status(201).send(post);
     },
   });
+
+  fastify.route({
+    method: 'DELETE',
+    url: '/api/v1/posts/:id',
+    schema: {
+      params: {
+        type: 'object',
+        properties: {
+          id: { type: 'string' },
+        },
+        required: ['id'],
+      },
+      response: {
+        200: {},
+        400: { $ref: 'ExceptionResponse#' },
+      },
+      tags: ['posts'],
+    },
+    async handler(req, res) {
+      await posts.commands.deletePost({ id: req.params.id });
+
+      res.status(200).send({});
+    },
+  });
 }
