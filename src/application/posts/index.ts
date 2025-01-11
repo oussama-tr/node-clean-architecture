@@ -1,6 +1,7 @@
 import { makeCreatePostCommand } from './commands/create-post';
 import { makeDeletePostCommand } from './commands/delete-post';
 import { makeGetPostQuery } from './queries/get-post';
+import { makeListPostsQuery } from './queries/list-posts';
 
 export function makePostsUseCases(dependencies: Dependencies) {
   return {
@@ -10,6 +11,7 @@ export function makePostsUseCases(dependencies: Dependencies) {
     },
     queries: {
       getPost: makeGetPostQuery(dependencies),
+      listPosts: makeListPostsQuery(dependencies),
     },
   };
 }
