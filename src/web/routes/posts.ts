@@ -96,4 +96,51 @@ export default async function postRoutes(fastify: FastifyRouteInstance) {
       res.status(200).send(post);
     },
   });
+  fastify.route({
+    method: 'GET',
+    url: '/api/v1/posts',
+    schema: {
+      querystring: {
+        type: 'object',
+        properties: {
+          pageNumber: { type: 'integer' },
+          pageSize: { type: 'integer' },
+        },
+        required: ['pageNumber', 'pageSize'],
+      },
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            count: { type: 'integer' },
+            hasPreviousPage: { type: 'boolean' },
+            hasNextPage: { type: 'boolean' },
+            pageNumber: { type: 'integer' },
+            pageSize: { type: 'integer' },
+            posts: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  id: { type: 'string' },
+                  title: { type: 'string' },
+                },
+              },
+            },
+            totalPages: { type: 'integer' },
+          },
+        },
+        400: { $ref: 'ExceptionResponse#' },
+      },
+      tags: ['posts'],
+    },
+    async handler(req, res) {
+      const postList = await posts.queries.listPosts({
+        pageNumber: req.query.pageNumber,
+        pageSize: req.query.pageSize,
+      });
+
+      res.status(200).send(postList);
+    },
+  });
 }
