@@ -3,6 +3,7 @@ import { z } from 'zod';
 
 export function makeConfig(): ApplicationConfig {
   const schema = z.object({
+    DATABASE_URL: z.string(),
     NODE_ENV: z.union([
       z.literal('development'),
       z.literal('production'),
