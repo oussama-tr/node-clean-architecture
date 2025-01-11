@@ -55,4 +55,45 @@ export default async function postRoutes(fastify: FastifyRouteInstance) {
       res.status(200).send({});
     },
   });
+
+  fastify.route({
+    method: 'GET',
+    url: '/api/v1/posts/:id',
+    schema: {
+      params: {
+        type: 'object',
+        properties: {
+          id: { type: 'string' },
+        },
+        required: ['id'],
+      },
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            id: { type: 'string' },
+            title: { type: 'string' },
+          },
+        },
+        400: { $ref: 'ExceptionResponse#' },
+        404: {
+          type: 'object',
+          properties: {
+            message: { type: 'string' },
+          },
+        },
+      },
+      tags: ['posts'],
+    },
+    async handler(req, res) {
+      const post = await posts.queries.getPost({ id: req.params.id });
+
+      if (!post) {
+        res.status(404).send({ message: `Post with id ${req.params.id} not found` });
+        return;
+      }
+
+      res.status(200).send(post);
+    },
+  });
 }
